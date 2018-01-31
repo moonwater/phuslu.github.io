@@ -1,3 +1,5 @@
+# A VM like docker container based on alpine
+# docker run --tmpfs /tmp --tmpfs /run --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro --rm -it ubuntu:16.04 bash -c 'cat </dev/console >/dev/null 2>&1 & exec /sbin/init'
 # see https://hub.docker.com/r/phuslu/alpine/
 
 FROM alpine:3.6
