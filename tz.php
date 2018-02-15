@@ -101,10 +101,10 @@ function get_ip_location_cn($ip)
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_USERAGENT, "curl/7.55.1");
 		$result = curl_exec($ch);
-		curl_close($ch);
 		if (curl_getinfo($ch, CURLINFO_HTTP_CODE) != 200) {
 			$result = '';
 		}
+		curl_close($ch);
 	}
 	else
 	{
@@ -404,52 +404,57 @@ function get_netarp()
 	return $info;
 }
 
-if (!function_exists('json_encode'))
+function my_json_encode($a=false)
 {
-	function json_encode($a=false)
+	if (is_null($a))
+		return 'null';
+	if ($a === false)
+		return 'false';
+	if ($a === true)
+		return 'true';
+	if (is_scalar($a))
 	{
-		if (is_null($a))
-			return 'null';
-		if ($a === false)
-			return 'false';
-		if ($a === true)
-			return 'true';
-		if (is_scalar($a))
+		if (is_float($a))
 		{
-			if (is_float($a))
-			{
-				return floatval(str_replace(',', '.', strval($a)));
-			}
-			if (is_string($a))
-			{
-				static $jsonReplaces = array(array("\\", "/", "\n", "\t", "\r", "\b", "\f", '"'), array('\\\\', '\\/', '\\n', '\\t', '\\r', '\\b', '\\f', '\"'));
-				return '"' . str_replace($jsonReplaces[0], $jsonReplaces[1], $a) . '"';
-			}
-			else
-				return $a;
+			return floatval(str_replace(',', '.', strval($a)));
 		}
-		$isList = true;
-		for ($i = 0, reset($a); $i < count($a); $i++, next($a))
+		if (is_string($a))
 		{
-			if (key($a) !== $i)
-			{
-				$isList = false;
-				break;
-			}
-		}
-		$result = array();
-		if ($isList)
-		{
-			foreach ($a as $v)
-				$result[] = json_encode($v);
-			return '[' . join(',', $result) . ']';
+			static $jsonReplaces = array(array("\\", "/", "\n", "\t", "\r", "\b", "\f", '"'), array('\\\\', '\\/', '\\n', '\\t', '\\r', '\\b', '\\f', '\"'));
+			return '"' . str_replace($jsonReplaces[0], $jsonReplaces[1], $a) . '"';
 		}
 		else
+			return $a;
+	}
+	$isList = true;
+	for ($i = 0, reset($a); $i < count($a); $i++, next($a))
+	{
+		if (key($a) !== $i)
 		{
-			foreach ($a as $k => $v)
-				$result[] = json_encode($k).':'.json_encode($v);
-			return '{' . join(',', $result) . '}';
+			$isList = false;
+			break;
 		}
+	}
+	$result = array();
+	if ($isList)
+	{
+		foreach ($a as $v)
+			$result[] = my_json_encode($v);
+		return '[' . join(',', $result) . ']';
+	}
+	else
+	{
+		foreach ($a as $k => $v)
+			$result[] = my_json_encode($k).':'.my_json_encode($v);
+		return '{' . join(',', $result) . '}';
+	}
+}
+
+if (!function_exists('json_encode'))
+{
+	function json_encode($a, $flag)
+	{
+		return my_json_encode($a);
 	}
 }
 
@@ -847,7 +852,7 @@ $.getJSON = function (url, f) {
 }
 
 var stat = <?php echo json_encode($stat); ?>;
-var netdev = <?php echo json_encode($netdev, JSON_PRETTY_PRINT); ?>;
+var netdev = <?php echo json_encode($netdev); ?>;
 
 function getSysinfo() {
 	$.getJSON('?method=sysinfo', function (data) {
