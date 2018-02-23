@@ -25,7 +25,7 @@ if [ "${SHELL##*/}" = "bash" ]; then if [[ "xterm-256color xterm screen rxvt cyg
     set show-all-if-ambiguous on
     set completion-ignore-case on
     shopt -s checkwinsize histappend
-    export PS1='\[\e]0;\h:\w\a\]\n\[\e[1;32m\]\u@\h\[\e[0;33m\] \w\n\[\e[1;$((31+3*!$?))m\]\$\[\e[0m\] '
+    export PS1='\[\e]0;\h:\w\a\]\n\[\e[1;32m\]\u@\h\[\e[0;33m\] \w \[\e[0m[\D{%H:%M:%S}]\n\[\e[1;$((31+3*!$?))m\]\$\[\e[0m\] '
     if grep --version >/dev/null 2>&1 ; then alias grep='grep --color'; fi
     for f in /usr/share/bash-completion/bash_completion ~/.z.sh ~/.git-completion.bash ~/.git-prompt.sh; do if [ -f $f ]; then source $f; fi; done
     if type -p __git_ps1; then export PS1='\[\e]0;\h:\w\a\]\n\[\e[1;32m\]\u@\h\[\e[0;33m\] \w$(__git_ps1 " (%s)") \[\e[0m[\D{%H:%M:%S}]\n\[\e[1;$((31+3*!$?))m\]\$\[\e[0m\] '; fi
