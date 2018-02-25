@@ -25,7 +25,13 @@ if (isset($_REQUEST['username']) && isset($_REQUEST['email']) && isset($_REQUEST
   }
 
   $subject = '[guestbook] ' . preg_replace('/^.+\n/', '', $message);
-  $body = 'Remote IP: ' . $remoteip . "\n-------------\n" . $message;
+  $body = implode("\n", array(
+    'UserName: '. $username,
+    'Email: '. $email,
+    'Remote IP: ' . $remoteip,
+    "----------------------------"
+    $message,
+  ));
 
   $mail = new PHPMailer(true);
   try {
