@@ -89,7 +89,10 @@ function get_remote_addr()
 
 function get_stat()
 {
-	return array_slice(preg_split('/\s+/', trim(array_shift(file('/proc/stat')))), 1);
+	$content = file('/proc/stat');
+	$array = array_shift($content);
+	$array = preg_split('/\s+/', trim($array));
+	return array_slice($array, 1);
 }
 
 function get_ip_location_cn($ip)
