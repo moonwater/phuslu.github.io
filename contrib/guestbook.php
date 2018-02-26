@@ -1,7 +1,12 @@
 <?php
-define("MAIL_TO", "webadmin@example.org");
-define("GMAIL_ACCOUNT", "yourname@gmail.com");
-define("GMAIL_PASSWORD", "123456");
+if (file_exists(dirname(__FILE__) . '/guestbook-config.php')) {
+  require_once(dirname(__FILE__) . '/guestbook-config.php');
+} else {
+  define("MAIL_TO", "webadmin@example.org");
+  define("MAIL_SMTP", "smtp.gmail.com");
+  define("MAIL_ACCOUNT", "yourname@gmail.com");
+  define("MAIL_PASSWORD", "123456");
+}
 
 # sudo apt install libphp-phpmailer
 require 'libphp-phpmailer/PHPMailerAutoload.php';
@@ -29,7 +34,7 @@ if (isset($_REQUEST['username']) && isset($_REQUEST['email']) && isset($_REQUEST
     'UserName: '. $username,
     'Email: '. $email,
     'Remote IP: ' . $remoteip,
-    "----------------------------"
+    "----------------------------",
     $message,
   ));
 
@@ -37,10 +42,10 @@ if (isset($_REQUEST['username']) && isset($_REQUEST['email']) && isset($_REQUEST
   try {
     #$mail->SMTPDebug = 2;
     $mail->isSMTP();
-    $mail->Host = 'smtp.gmail.com';
+    $mail->Host = MAIL_SMTP;
+    $mail->Username = MAIL_ACCOUNT;
+    $mail->Password = MAIL_PASSWORD;
     $mail->SMTPAuth = true;
-    $mail->Username = GMAIL_ACCOUNT;
-    $mail->Password = GMAIL_PASSWORD;
     $mail->SMTPSecure = 'tls';
     $mail->Port = 587;
     $mail->CharSet = 'UTF-8';
@@ -315,3 +320,4 @@ h1 {
 }
 </style>
 </html>
+
