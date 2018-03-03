@@ -26,8 +26,8 @@ function __($message) {
 		'MotherBoard BIOS' => '主板 BIOS',
 		'HardDisk Model' => '硬盘型号',
 		'CPU Usage' => 'CPU 使用状况',
-		'CPU Temperature' => 'CPU 当前温度',
-		'GPU Temperature' => 'GPU 当前温度',
+		'CPU Temperature' => 'CPU 温度',
+		'GPU Temperature' => 'GPU 温度',
 		'Memory Usage' => '内存使用状况',
 		'Physical Memory' => '物理内存',
 		'Used' => '已用',
@@ -614,6 +614,9 @@ body {
 	<td colspan="3"><?php echo $cpuinfo['model'];?></td>
 	</tr>
 	<tr>
+	<td><?php __('CPU Instruction Set'); ?></td>
+	<td colspan="3" style="word-wrap: break-word;width: 64em;"><?php echo $cpuinfo['flags'];?></td>
+	</tr>
 <?php if (isset($tempinfo['cpu'])) : ?>
 	<tr>
 	<td><?php __('CPU Temperature'); ?></td>
@@ -622,9 +625,6 @@ body {
 	<td><span id="gpu_temp"><?php echo $tempinfo['gpu'];?></span></td>
 	</tr>
 <?php endif; ?>
-	<td><?php __('CPU Instruction Set'); ?></td>
-	<td colspan="3" style="word-wrap: break-word;width: 64em;"><?php echo $cpuinfo['flags'];?></td>
-	</tr>
 <?php if (isset($boardinfo['boardVendor'])) : ?>
 	<tr>
 	<td><?php __('MotherBoard Model'); ?></td>
