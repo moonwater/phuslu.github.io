@@ -26,6 +26,7 @@ function __($message) {
 		'MotherBoard BIOS' => '主板 BIOS',
 		'HardDisk Model' => '硬盘型号',
 		'CPU Usage' => 'CPU 使用状况',
+		'CPU Temperature' => 'CPU 当前温度',
 		'Memory Usage' => '内存使用状况',
 		'Physical Memory' => '物理内存',
 		'Used' => '已用',
@@ -233,6 +234,14 @@ function get_uptime()
 	$uptime .= $min.$muint;
 
 	return $uptime;
+}
+
+function get_cputemp()
+{
+	if (!($str = @file('/sys/class/thermal/thermal_zone0/temp')))
+		return false;
+
+	return $str[0]/1000.0;
 }
 
 function get_meminfo()
@@ -476,6 +485,7 @@ switch ($_GET['method']) {
 			'stat' => get_stat(),
 			'stime' => date('Y-m-d H:i:s'),
 			'uptime' => get_uptime(),
+			'cputemp' => get_cputemp(),
 			'meminfo' => get_meminfo(),
 			'loadavg' => get_loadavg(),
 			'diskinfo' => get_diskinfo(),
@@ -494,6 +504,7 @@ $distname = get_distname();
 $remote_addr = get_remote_addr();
 $uptime = get_uptime();
 $cpuinfo = get_cpuinfo();
+$cputemp = get_cputemp();
 $meminfo = get_meminfo();
 $loadavg = get_loadavg();
 $boardinfo = get_boardinfo();
@@ -597,6 +608,12 @@ body {
 	<td colspan="3"><?php echo $cpuinfo['model'];?></td>
 	</tr>
 	<tr>
+<?php if ($cputemp !== false) : ?>
+	<tr>
+	<td><?php __('CPU Temperature'); ?></td>
+	<td colspan="3"><span id="cpu_temp"><?php echo $cputemp;?></span> ℃</td>
+	</tr>
+<?php endif; ?>
 	<td><?php __('CPU Instruction Set'); ?></td>
 	<td colspan="3" style="word-wrap: break-word;width: 64em;"><?php echo $cpuinfo['flags'];?></td>
 	</tr>
@@ -861,6 +878,7 @@ function getSysinfo() {
 	$.getJSON('?method=sysinfo', function (data) {
 		$('#uptime').html(data.uptime)
 		$('#stime').html(data.stime)
+		$('#cpu_temp').html(data.cputemp)
 
 		stat_total = 0
 		for (var i = 0; i < data.stat.length; i++) {
