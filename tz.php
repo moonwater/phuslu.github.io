@@ -15,7 +15,7 @@ function __($message) {
 		'Language' => '语言',
 		'Port' => '端口',
 		'Hostname' => '主机名',
-		'WebAdmin Email' => '管理员邮箱',
+		'PHP Version' => 'PHP 版本',
 		'Prober Path' => '探针路径',
 		'Server Realtime Data' => '服务器实时数据',
 		'Time' => '当前时间',
@@ -590,8 +590,8 @@ body {
 	<tr>
 	<td><?php __('Hostname'); ?></td>
 	<td><?php $os = explode(' ', $uname); echo $os[1]; ?></td>
-	<td><?php __('WebAdmin Email'); ?></td>
-	<td><?php echo $_SERVER['SERVER_ADMIN'];?></td>
+	<td><?php __('PHP Version'); ?></td>
+	<td><?php echo phpversion();?></td>
 	</tr>
 	<tr>
 	<td><?php __('Prober Path'); ?></td>
