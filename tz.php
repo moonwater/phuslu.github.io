@@ -724,7 +724,7 @@ body {
 <table class="table table-striped table-bordered table-hover table-condensed">
 	<tr>
 	<td>PHP <?php __('Prober'); ?>(<a href="https://phuslu.github.io"><?php __('Turbo Version'); ?></a>) v1.0</td>
-	<td>Processed in <?php printf('%0.4f', microtime(true) - $time_start);?> seconds. <?php echo round(memory_get_usage()/1024/1024, 2).'MB';?> memory usage.</td>
+	<td>Processed in <?php printf('%0.1f', (microtime(true) - $time_start)*1000);?> ms, <?php echo round(memory_get_usage()/1024, 0).' KB';?> memory usage.</td>
 	<td><a href="javascript:scroll(0,0)"><?php __('Back to top'); ?></a></td>
 	</tr>
 </table>
