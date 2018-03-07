@@ -653,7 +653,10 @@ body {
 	<span id="stat_irq">0.0</span> irq,
 	<span id="stat_softirq">0.0</span> softirq,
 	<span id="stat_steal">0.0</span> steal
-	<div class="progress"><div id="barcpuPercent" class="progress-bar progress-bar-success" role="progressbar" style="width:1px" >&nbsp;</div></div>
+	<div class="progress">
+	<div id="barcpuPercentUser" class="progress-bar progress-bar-success" role="progressbar" style="width:1px" >&nbsp;</div>
+	<div id="barcpuPercentSystem" class="progress-bar progress-bar-danger" role="progressbar" style="width:0px" >&nbsp;</div>
+	</div>
 	</td>
 	</tr>
 	<tr>
@@ -904,15 +907,8 @@ function getSysinfo() {
 		$("#stat_irq").html((100*stat[5]/stat_total).toFixed(1))
 		$("#stat_softirq").html((100*stat[6]/stat_total).toFixed(1))
 		$("#stat_steal").html((100*stat[7]/stat_total).toFixed(1))
-		usage = 100 * (1 - (stat[3]+stat[4])/stat_total)
-		if (usage > 75)
-			$("#barcpuPercent").width(usage+'%').removeClass().addClass('progress-bar-danger')
-		else if (usage > 50)
-			$("#barcpuPercent").width(usage+'%').removeClass().addClass('progress-bar-warning')
-		else if (usage > 25)
-			$("#barcpuPercent").width(usage+'%').removeClass().addClass('progress-bar-info')
-		else
-			$("#barcpuPercent").width(usage+'%').removeClass().addClass('progress-bar-success')
+		$("#barcpuPercentUser").width(100 * (stat[0]+stat[1])/stat_total+'%')
+		$("#barcpuPercentSystem").width((100 * (stat_total-stat[0]-stat[1]-stat[3])/stat_total)+'%')
 		stat = data.stat
 
 		$('#meminfo_memTotal').html(data.meminfo.memTotal)
