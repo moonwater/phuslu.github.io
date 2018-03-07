@@ -6,7 +6,6 @@ function __($message) {
 		'Gateway' => '网关管理',
 		'Monitor' => '性能监控',
 		'Server Information' => '服务器参数',
-		'Domain' => '域名',
 		'IP Address' => 'IP 地址',
 		'your ip is:' => '你的 IP 地址是：',
 		'Uname' => '内核标识',
@@ -14,7 +13,8 @@ function __($message) {
 		'Server Software' => '服务器软件',
 		'Language' => '语言',
 		'Port' => '端口',
-		'Hostname' => '主机名',
+		'User' => '用户',
+		'Hostname' => '主机名称',
 		'PHP Version' => 'PHP 版本',
 		'Prober Path' => '探针路径',
 		'Server Realtime Data' => '服务器实时数据',
@@ -500,7 +500,6 @@ switch ($_GET['method']) {
 $time_start = microtime(true);
 $stat = get_stat();
 $LC_CTYPE = setlocale(LC_CTYPE, 0);
-$current_user = @get_current_user();
 $uname = php_uname();
 $stime = date('Y-m-d H:i:s');
 $distname = get_distname();
@@ -565,8 +564,8 @@ body {
 	<th colspan="4"><?php __('Server Information'); ?></th>
 	</tr>
 	<tr>
-	<td><?php __('Domain'); ?>/<?php __('IP Address'); ?></td>
-	<td colspan="3"><?php echo $current_user;?> - <?php echo $_SERVER['SERVER_NAME'];?>(<?php echo $_SERVER['SERVER_ADDR']; ?>)&nbsp;&nbsp;<?php __('your ip is:'); ?><?php echo $remote_addr;?> <span id="iploc"></span></td>
+	<td><?php __('Hostname'); ?></td>
+	<td colspan="3"><?php echo $_SERVER['USER'];?> - <?php $os = explode(' ', $uname); echo $os[1];?>(<?php echo $_SERVER['SERVER_ADDR']; ?>)&nbsp;&nbsp;<?php __('your ip is:'); ?><?php echo $remote_addr;?> <span id="iploc"></span></td>
 	</tr>
 	<tr>
 	<td><?php __('Uname'); ?></td>
@@ -581,12 +580,6 @@ body {
 	<tr>
 	<td><?php __('Language'); ?></td>
 	<td><?php echo $LC_CTYPE=='C'?'POSIX':$LC_CTYPE;?></td>
-	<td><?php __('Port'); ?></td>
-	<td><?php echo $_SERVER['SERVER_PORT'];?></td>
-	</tr>
-	<tr>
-	<td><?php __('Hostname'); ?></td>
-	<td><?php $os = explode(' ', $uname); echo $os[1]; ?></td>
 	<td><?php __('PHP Version'); ?></td>
 	<td><?php echo phpversion();?></td>
 	</tr>
