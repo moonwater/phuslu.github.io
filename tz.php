@@ -415,7 +415,7 @@ function get_netarp()
 
 	$seen = array();
 	$strs = @file('/proc/net/arp');
-	for ($i = 2; $i < count($strs); $i++ )
+	for ($i = 1; $i < count($strs); $i++ )
 	{
 		$parts = preg_split('/\s+/', $strs[$i]);
 		if ('0x2' == $parts[2] && !isset($seen[$parts[3]])) {
