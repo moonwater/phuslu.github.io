@@ -655,6 +655,8 @@ body {
 	<td colspan="3">
 	<?php __('Physical Memory'); ?> <span id="meminfo_memTotal" class="text-info"><?php echo $meminfo['memTotal'];?> </span>
 	, <?php __('Used'); ?> <span id="meminfo_memUsed" class="text-info"><?php echo $meminfo['memUsed'];?></span>
+	, <?php __('Cached'); ?> <span id="meminfo_memBuffers" class="text-info"><?php echo $meminfo['memBuffers'];?></span>
+	/ <span id="meminfo_memCached" class="text-info"><?php echo $meminfo['memCached'];?></span>
 	, <?php __('Free'); ?> <span id="meminfo_memFree" class="text-info"><?php echo $meminfo['memFree'];?></span>
 	, <?php __('Percent'); ?> <span id="meminfo_memUsedPercent"><?php echo $meminfo['memUsedPercent'];?></span>%<br>
 	<div class="progress">
