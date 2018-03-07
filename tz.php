@@ -566,7 +566,7 @@ body {
 	</tr>
 	<tr>
 	<td><?php __('Domain'); ?>/<?php __('IP Address'); ?></td>
-	<td colspan="3"><?php echo $current_user;?> - <?php echo $_SERVER['SERVER_NAME'];?>(<?php echo @gethostbyname($_SERVER['SERVER_NAME']); ?>)&nbsp;&nbsp;<?php __('your ip is:'); ?><?php echo $remote_addr;?> <span id="iploc"></span></td>
+	<td colspan="3"><?php echo $current_user;?> - <?php echo $_SERVER['SERVER_NAME'];?>(<?php echo $_SERVER['SERVER_ADDR']; ?>)&nbsp;&nbsp;<?php __('your ip is:'); ?><?php echo $remote_addr;?> <span id="iploc"></span></td>
 	</tr>
 	<tr>
 	<td><?php __('Uname'); ?></td>
