@@ -31,11 +31,10 @@ function __($message) {
 		'Memory Usage' => '内存使用状况',
 		'Physical Memory' => '物理内存',
 		'Used' => '已用',
+		'Cached' => '已缓存',
 		'Free' => '空闲',
 		'Percent' => '使用率',
 		'Total Space' => '总空间',
-		'Cache Memory' => 'Cache 内存',
-		'Real Memory' => '真实内存',
 		'Disk Usage' => '硬盘使用状况',
 		'Loadavg' => '系统平均负载',
 		'Network Usage' => '网络使用状况',
@@ -264,17 +263,15 @@ function get_meminfo()
 	$info['memTotal'] = round($buf[1][0]/1024, 2);
 	$info['memFree'] = round($buf[2][0]/1024, 2);
 	$info['memBuffers'] = round($buffers[1][0]/1024, 2);
-	$info['memUsed'] = $info['memTotal']-$info['memFree'];
 	$info['memCached'] = round($buf[3][0]/1024, 2);
-	$info['memRealUsed'] = $info['memTotal'] - $info['memFree'] - $info['memCached'] - $info['memBuffers'];
-	$info['memRealFree'] = $info['memTotal'] - $info['memRealUsed'];
+	$info['memUsed'] = round($info['memTotal']-$info['memFree']-$info['memBuffers']-$info['memCached'], 2);
+	$info['memUsedPercent'] = (floatval($info['memTotal'])!=0)?round($info['memUsed']/$info['memTotal']*100,2):0;
+	$info['memBuffersPercent'] = (floatval($info['memTotal'])!=0)?round($info['memBuffers']/$info['memTotal']*100,2):0;
+	$info['memCachedPercent'] = (floatval($info['memTotal'])!=0)?round($info['memCached']/$info['memTotal']*100,2):0;
+
 	$info['swapTotal'] = round($buf[4][0]/1024, 2);
 	$info['swapFree'] = round($buf[5][0]/1024, 2);
 	$info['swapUsed'] = round($info['swapTotal']-$info['swapFree'], 2);
-
-	$info['memPercent'] = (floatval($info['memTotal'])!=0)?round($info['memUsed']/$info['memTotal']*100,2):0;
-	$info['memCachedPercent'] = (floatval($info['memCached'])!=0)?round($info['memCached']/$info['memTotal']*100,2):0;
-	$info['memRealPercent'] = (floatval($info['memTotal'])!=0)?round($info['memRealUsed']/$info['memTotal']*100,2):0;
 	$info['swapPercent'] = (floatval($info['swapTotal'])!=0)?round($info['swapUsed']/$info['swapTotal']*100,2):0;
 
 	foreach ($info as $key => $value) {
@@ -657,21 +654,13 @@ body {
 	<td><?php __('Memory Usage'); ?></td>
 	<td colspan="3">
 	<?php __('Physical Memory'); ?> <span id="meminfo_memTotal" class="text-info"><?php echo $meminfo['memTotal'];?> </span>
-	 , <?php __('Used'); ?> <span id="meminfo_memUsed" class="text-info"><?php echo $meminfo['memUsed'];?></span>
+	, <?php __('Used'); ?> <span id="meminfo_memUsed" class="text-info"><?php echo $meminfo['memUsed'];?></span>
 	, <?php __('Free'); ?> <span id="meminfo_memFree" class="text-info"><?php echo $meminfo['memFree'];?></span>
-	, <?php __('Percent'); ?> <span id="meminfo_memPercent"><?php echo $meminfo['memPercent'];?></span>%<br>
-	<!--
-	<?php __('Cache Memory'); ?> <span id="meminfo_memCached"><?php echo $meminfo['memCached'];?></span>
-	, <?php __('Percent'); ?> <span id="meminfo_memCachedPercent"><?php echo $meminfo['memCachedPercent'];?></span>%
-	| Buffers <span id="meminfo_memBuffers"><?php echo $meminfo['memBuffers'];?></span><br>
-	<?php __('Real Memory'); ?> <span id="meminfo_memRealUsed"><?php echo $meminfo['memRealUsed'];?></span>
-	, <?php __('Real Memory'); ?><?php __('Free'); ?> <span id="meminfo_memRealFree"><?php echo $meminfo['memRealFree'];?></span>
-	, <?php __('Percent'); ?> <span id="meminfo_memRealPercent"><?php echo $meminfo['memRealPercent'];?></span>%
-	-->
+	, <?php __('Percent'); ?> <span id="meminfo_memUsedPercent"><?php echo $meminfo['memUsedPercent'];?></span>%<br>
 	<div class="progress">
-	<div id="meminfo_barmemRealPercent" class="progress-bar progress-bar-success" role="progressbar" style="width:<?php echo $meminfo['memRealPercent'];?>%" ></div>
-	<div id="meminfo_barmemCachedPercent" class="progress-bar progress-bar-info" role="progressbar" style="width:<?php echo $meminfo['memCachedPercent']-$meminfo['memRealPercent'];?>%" ></div>
-	<div id="meminfo_barmemPercent" class="progress-bar progress-bar-warning" role="progressbar" style="width:<?php echo $meminfo['memPercent']-$meminfo['memCachedPercent'];?>%" ></div>
+	<div id="meminfo_barmemUsedPercent" class="progress-bar progress-bar-success" role="progressbar" style="width:<?php echo $meminfo['memUsedPercent'];?>%" ></div>
+	<div id="meminfo_barmemBuffersPercent" class="progress-bar progress-bar-info" role="progressbar" style="width:<?php echo $meminfo['memBuffersPercent'];?>%" ></div>
+	<div id="meminfo_barmemCachedPercent" class="progress-bar progress-bar-warning" role="progressbar" style="width:<?php echo $meminfo['memCachedPercent'];?>%" ></div>
 	</div>
 <?php if($meminfo['swapTotal']>0): ?>
 	SWAP：<span id="meminfo_swapTotal"><?php echo $meminfo['swapTotal'];?></span>
@@ -921,20 +910,15 @@ function getSysinfo() {
 		$('#meminfo_memTotal').html(data.meminfo.memTotal)
 		$('#meminfo_memUsed').html(data.meminfo.memUsed)
 		$('#meminfo_memFree').html(data.meminfo.memFree)
-		$('#meminfo_memPercent').html(data.meminfo.memPercent)
-		$('#meminfo_barmemPercent').width(data.meminfo.memPercent)
-		$('#meminfo_memCached').html(data.meminfo.memCached)
-		$('#meminfo_memBuffers').html(data.meminfo.memBuffers)
+		$('#meminfo_memUsedPercent').html(data.meminfo.memUsedPercent)
+		$('#meminfo_barmemUsedPercent').width(data.meminfo.memUsedPercent)
+		$('#meminfo_barmemBuffersPercent').width(data.meminfo.memBuffersPercent)
+		$('#meminfo_barmemCachedPercent').width(data.meminfo.memCachedPercent)
+
 		$('#meminfo_swapTotal').html(data.meminfo.swapTotal)
 		$('#meminfo_swapUsed').html(data.meminfo.swapUsed)
 		$('#meminfo_swapFree').html(data.meminfo.swapFree)
 		$('#meminfo_swapPercent').html(data.meminfo.swapPercent)
-		$('#meminfo_memRealUsed').html(data.meminfo.memRealUsed)
-		$('#meminfo_memRealFree').html(data.meminfo.memRealFree)
-		$('#meminfo_memRealPercent').html(data.meminfo.memRealPercent)
-		$('#meminfo_memCachedPercent').html(data.meminfo.memCachedPercent)
-		$('#meminfo_barmemRealPercent').width(data.meminfo.memRealPercent)
-		$('#meminfo_barmemCachedPercent').width(data.meminfo.memCachedPercent)
 		$('#meminfo_barswapPercent').width(data.meminfo.swapPercent)
 
 		$('#diskinfo_diskUsed').html(data.diskinfo.diskUsed)
