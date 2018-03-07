@@ -659,18 +659,20 @@ body {
 	<?php __('Physical Memory'); ?> <span id="meminfo_memTotal" class="text-info"><?php echo $meminfo['memTotal'];?> </span>
 	 , <?php __('Used'); ?> <span id="meminfo_memUsed" class="text-info"><?php echo $meminfo['memUsed'];?></span>
 	, <?php __('Free'); ?> <span id="meminfo_memFree" class="text-info"><?php echo $meminfo['memFree'];?></span>
-	, <?php __('Percent'); ?> <span id="meminfo_memPercent"><?php echo $meminfo['memPercent'];?></span>%
-	<div class="progress"><div id="meminfo_barmemPercent" class="progress-bar progress-bar-success" role="progressbar" style="width:<?php echo $meminfo['memPercent'];?>%" ></div></div>
-<?php if($meminfo['memCached']>0): ?>
+	, <?php __('Percent'); ?> <span id="meminfo_memPercent"><?php echo $meminfo['memPercent'];?></span>%<br>
+	<!--
 	<?php __('Cache Memory'); ?> <span id="meminfo_memCached"><?php echo $meminfo['memCached'];?></span>
 	, <?php __('Percent'); ?> <span id="meminfo_memCachedPercent"><?php echo $meminfo['memCachedPercent'];?></span>%
-	| Buffers <span id="meminfo_memBuffers"><?php echo $meminfo['memBuffers'];?></span>
-	<div class="progress"><div id="meminfo_barmemCachedPercent" class="progress-bar progress-bar-info" role="progressbar" style="width:<?php echo $meminfo['memCachedPercent'];?>%" ></div></div>
+	| Buffers <span id="meminfo_memBuffers"><?php echo $meminfo['memBuffers'];?></span><br>
 	<?php __('Real Memory'); ?> <span id="meminfo_memRealUsed"><?php echo $meminfo['memRealUsed'];?></span>
 	, <?php __('Real Memory'); ?><?php __('Free'); ?> <span id="meminfo_memRealFree"><?php echo $meminfo['memRealFree'];?></span>
 	, <?php __('Percent'); ?> <span id="meminfo_memRealPercent"><?php echo $meminfo['memRealPercent'];?></span>%
-	<div class="progress"><div id="meminfo_barmemRealPercent" class="progress-bar progress-bar-warning" role="progressbar" style="width:<?php echo $meminfo['memRealPercent'];?>%" ></div></div>
-<?php endif; ?>
+	-->
+	<div class="progress">
+	<div id="meminfo_barmemRealPercent" class="progress-bar progress-bar-success" role="progressbar" style="width:<?php echo $meminfo['memRealPercent'];?>%" ></div>
+	<div id="meminfo_barmemCachedPercent" class="progress-bar progress-bar-info" role="progressbar" style="width:<?php echo $meminfo['memCachedPercent']-$meminfo['memRealPercent'];?>%" ></div>
+	<div id="meminfo_barmemPercent" class="progress-bar progress-bar-warning" role="progressbar" style="width:<?php echo $meminfo['memPercent']-$meminfo['memCachedPercent'];?>%" ></div>
+	</div>
 <?php if($meminfo['swapTotal']>0): ?>
 	SWAP：<span id="meminfo_swapTotal"><?php echo $meminfo['swapTotal'];?></span>
 	, <?php __('Used'); ?> <span id="meminfo_swapUsed"><?php echo $meminfo['swapUsed'];?></span>
